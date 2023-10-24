@@ -1,22 +1,18 @@
 import pygame
 
 #Read size, map and position of pacman from txt file
-def readMap(fileName):
+def readMap(filename):
     try:
-        size = ()
-        map = []
-        position = []
-        
-        with open(fileName, "r") as file:
-            size = file.readline()
-            size = tuple(int(size.split()))
-            res = file.readlines()
-            #Read map and pos
-            for i in range(len(res)):
-                map.append(int(res[i].split()))
-            position = map.pop(-1)    
-            print(size, map, position)
+        with open(filename, "r") as f:
+            # Read the size and convert to a tuple
+            size = tuple(map(int, f.readline().split()))
 
+            # Read the map data and convert to a list of lists
+            map = [list(map(int, line.split())) for line in f]
+
+            # Extract the position from the last row
+            pos = map.pop()
+            return size, map, pos
     except FileNotFoundError:
         print("Could not open file")
     except Exception as e:

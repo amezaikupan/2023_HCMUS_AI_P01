@@ -45,8 +45,9 @@ def a_star_algorithm(map, start, goal):
     frontier = [(start_pos, total_cost)]
     #List of position explored
     explored = set()
-    #Store
-    parent_node = {}
+
+    #Store the previous position of a position using a dicitonary
+    previous_pos = {}
     path = [] #Path
 
     while frontier:
@@ -55,11 +56,13 @@ def a_star_algorithm(map, start, goal):
 
         #When pacman reach the food position
         if current_pos == food_pos:
-            #Trace back the road to from the parent node to the current node
-            while current_pos in parent_node:
+            #Trace back the road to from current position to its preveious position
+            while current_pos in previous_pos:
                 path.append(current_pos)
-                current_pos = parent_node[current_pos]
+                current_pos = previous_pos[current_pos]
             path.append(current_pos)
+
+            #Reverse the path 
             return path[::-1]
             
         if current_pos not in explored:
@@ -69,22 +72,11 @@ def a_star_algorithm(map, start, goal):
                 
                 if neighbor not in explored:
                     new_total_cost = total_cost + 1 
-                    parent_node[neighbor] = current_pos
+                    previous_pos[neighbor] = current_pos
                     frontier.append((neighbor,new_total_cost))
         
-            frontier.sort(key = lambda x: x[1] + find_heuristic(x[0],food_pos), reverse=False)
+            frontier.sort(key = lambda x: x[1] + find_heuristic(x[0],food_pos), reverse = False)
 
     return []
-        
-# map , size, pos= get_map("../test/lv1_map1.txt")
-
-# food = find_food(map)
-# path = a_star_algorithm(map, pos, food)
-# print (path)
-# print (len(path))
-# score = len(path) * (-1) + 20
-# print (score)
-
-
 
 

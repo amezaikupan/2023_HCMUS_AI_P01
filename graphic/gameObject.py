@@ -104,7 +104,7 @@ class MovableGameObject(GameObject):
         #No valid move
         if self._nextPosition is None:
             self._nextPosition = self.getNextPosition()
-            if (self._nextPosition is None and self._controller._status == "block"):
+            if (self._nextPosition is None and self._controller._status == "blocked"):
                 self._environment.endGame()
             return Direction.Unchanged
 
@@ -195,8 +195,9 @@ class Pacman(MovableGameObject):
     def handleMonsterCollision(self):
         monsters = self._environment.getMonster()
         pacman = self._environment.getPacman()
+        pacman_pos = pacman.getPosition()
         for monster in monsters:
-            if pacman.getPosition() == monster.getPosition():
+            if pacman_pos == monster.getPosition():
                 self._environment.endGame()
     
     def draw(self):
@@ -306,7 +307,7 @@ class Environment:
                 text_rect = text.get_rect(center=(self._width / 2, self._height / 2))
                 self._screen.blit(text, text_rect)
             pygame.display.flip()
-            self._clock.tick(120)
+            self._clock.tick(240)
             self._screen.fill((0,0,0))
             self.handleEvent()
         print("Score:", self._score)

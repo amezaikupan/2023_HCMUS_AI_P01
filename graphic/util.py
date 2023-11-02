@@ -16,5 +16,5 @@ def readMap(filename):
     except Exception as e:
         print(e)
         
-def calculateCoor(in_coords, in_size=40):
+def calculateCoor(in_coords, in_size):
     return in_coords[1] * in_size, in_coords[0] * in_size

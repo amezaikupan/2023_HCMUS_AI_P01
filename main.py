@@ -2,7 +2,7 @@ import pygame
 import time
 from graphic.util import calculateCoor
 from graphic.gameObject import Wall, Pacman, Monster, Food, GameController, Environment
-CELL_SIZE = 40
+CELL_SIZE = 25
 
 if __name__ == '__main__':
     level = input("Level: ")
@@ -40,7 +40,7 @@ if __name__ == '__main__':
     #Initialize monsters:
     for pos, monster_pos in enumerate(controller._monster_spawns):
         monster_path = [
-            calculateCoor(sublist[pos]) for sublist in monsters_path
+            calculateCoor(sublist[pos], CELL_SIZE) for sublist in monsters_path
         ]
 
         monster = Monster(
@@ -55,7 +55,7 @@ if __name__ == '__main__':
         environment.setMonster(monster)
       
     #Initialize pacman:
-    pacman_path = [calculateCoor(item) for item in pacman_path]
+    pacman_path = [calculateCoor(item, CELL_SIZE) for item in pacman_path]
     pacman = Pacman(
         controller._pacmanPos[1] * CELL_SIZE,
         controller._pacmanPos[0] * CELL_SIZE,

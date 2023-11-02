@@ -24,7 +24,7 @@ def MonsterMove(map, monsters):
             x = pos[0]
             y = pos[1]
             #Check the pos is in the map, and not blocked by wall
-            if( 0 <= x < len(map) and 0 <= y < len(map[0])  and map[x][y] != (1,2)):
+            if( 0 <= x < len(map) and 0 <= y < len(map[0])  and map[x][y] != 1):
                 valid_pos.append((x,y)) # If true, it is a valid position.
             
         move = random.choice(valid_pos) #Choice the next move randomly

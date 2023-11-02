@@ -1,6 +1,7 @@
 from algorithm.A_star import find_heuristic,get_neighbors, a_star_algorithm
 from graphic.util import readMap
 import random
+import math
 
 #Find all the position in the map for all types of object
 def FindObject(map, type):
@@ -24,7 +25,7 @@ def MonsterMove(map, monsters):
             x = pos[0]
             y = pos[1]
             #Check the pos is in the map, and not blocked by wall
-            if( 0 <= x < len(map) and 0 <= y < len(map[0])  and map[x][y] != (1,2)):
+            if( 0 <= x < len(map) and 0 <= y < len(map[0])  and map[x][y] != 1 and map[x][y] != 2 ):
                 valid_pos.append((x,y)) # If true, it is a valid position.
             
         move = random.choice(valid_pos) #Choice the next move randomly
@@ -32,7 +33,9 @@ def MonsterMove(map, monsters):
        #Update the map
         map[move[0]][move[1]] = 3
         map[monster[0]][monster[1]] = 0
+
         MonstersPos.append(move)
+
     return MonstersPos,map
 
 #Because in level 3, pacman has a limited visible range, so I change all the value of map into another value (specifically 4)
@@ -80,8 +83,6 @@ def PacmanMove(map, pacman_pos, pacman_view):
 
     #Find all foods exist in Pacman visibilty
     foods_in_pacman_view = FindObject(pacman_view,2)
-    print ("Food in pacman view:")
-    print (foods_in_pacman_view)
 
     if len(foods_in_pacman_view )== 0: #When there is no more food in Pacman visibility, 
         invisible_pos = FindObject(pacman_view,4) #I find the postion of all invisible positions around Pacman,
@@ -89,10 +90,7 @@ def PacmanMove(map, pacman_pos, pacman_view):
         if len(invisible_pos) == 0: #When Pacman had explored all the map
             return []
         
-        invisible_pos = sorted(invisible_pos, key= lambda pos: find_heuristic(pacman_pos,pos))
-        
-        print ("invisible: next pos")
-        print(invisible_pos[0])
+        invisible_pos = sorted(invisible_pos, key= lambda pos: find_heuristic(pacman_pos,pos), reverse = False)
 
         #I use A* algorithm to find the path to the nearest position
         #I found in "map" instead of the Pacman view becausse I just want to find a possible next move of Pacman. 
@@ -111,14 +109,12 @@ def PacmanMove(map, pacman_pos, pacman_view):
         #Sort the path to find the nearest path
         path_list = sorted( path_list, key = len, reverse = False )
         
-        for path in path_list:
-            if len(path) != 0:
-                return path
-        return []
+        return path_list[0]
+        # return []
 #Check a position is safe or not
 def check_safe_move(pos, monsters_pos):
     for monster in monsters_pos:
-        if find_heuristic(pos, monster) <= 1:
+        if find_heuristic(pos, monster) <= 2:
             return False
     return True
 
@@ -141,7 +137,6 @@ def Handle_Level_03(map, start):
     pure_map = create_pure_map(map)
     pacman_view = Init_Pacman_view(map)
     pacman_view = Update_Pacman_view(map, pacman_view, start_pos)
-    print ("+++++++++++")
     foods_pos = FindObject(map,2)
     monsters_pos = FindObject(map,3)
 
@@ -153,65 +148,82 @@ def Handle_Level_03(map, start):
    
     while (True):
         foods_pos = FindObject(map,2)
-        print ("+++++++++++++++++++++++++++++++")
-        print ("Start position:")
-        print (start_pos)
-        #Firstly, Pacman will move one step, I use Pacmove funciton to determine which position Pacman will move to
-        path = PacmanMove (pure_map, start_pos, pacman_view)
-        print ("path")
-        print (path)
+        if (start_pos in monsters_pos):
+            print (" +++++++ GAME OVER ++++++++++")
+            status = "Lose condition 1"
+            print (start_pos)
+            print (status)
+            return Pacman_path, Monster_path,status
+        
+        monsters_pos, map = MonsterMove(map, monsters_pos)
+        Monster_path.append(monsters_pos)
+        pacman_view = Update_Pacman_view(map, pacman_view, start_pos)
+        
+        if (start_pos in monsters_pos):
+            print (" +++++++ GAME OVER ++++++++++")
+            print (start_pos)
+            status = "Lose condition 2"
+            return Pacman_path, Monster_path,status
+        
+        if (len(foods_pos) == 0):
+            print ("++++++++++ WIN +++++++++++++++")
+            status = "win"
+            print (start_pos)
+            return Pacman_path, Monster_path,status
+
+        #Pacman will move one step, I use Pacmanmove funciton to determine which position Pacman will move to
+        path = PacmanMove (map, start_pos, pacman_view)
         if (len(path) == 0): #Pacman cannot move anymore (there is no foods or invisible position)
-            for line in pacman_view:
-                print (line)
-            print ("++++++++")
-            for line in map:
-                print (line)
-            print ("CANNOT MOVE ANYMORE")
-            print (foods_pos)
             status = "Blocked"
             return Pacman_path, Monster_path, status
         
         elif (len(path) == 1): # Pacman reach the goal (goal can be food or the nearest invisible position)
-                            #In this situation, Pacman is no longer afraid of monsters
-            monsters_pos, map = MonsterMove(map, monsters_pos)
-            print ("Monster positon: ", monsters_pos)
-            Monster_path.append(monsters_pos)
+                        #In this situation, Pacman is no longer afraid of monsters
             start_pos = path[0] #Pacman move
-            map, foods_pos, pacman_view = EatFood(map, start_pos, foods_pos, pacman_view)
-            print ("So luong food hien tai: ", len(foods_pos))
+        
+            if start_pos in foods_pos:
+                map, foods_pos, pacman_view = EatFood(map, start_pos, foods_pos, pacman_view)
+
+            pacman_view = Update_Pacman_view(map, pacman_view, start_pos)
+            Pacman_path.append(start_pos) 
 
         else: #more than 1 step to go to the goal
             start_pos = path.pop(0) # Get the current position of Pacman 
+            # if start_pos in foods_pos:
+            #     map, foods_pos, pacman_view = EatFood(map, start_pos, foods_pos, pacman_view)
             next_pos = path[0] #Get the next postion in path
-            
-            if check_safe_move(next_pos, monsters_pos) == True: #when Pacmnan is in a safe position with monsters
+            if start_pos in foods_pos:
+                map, foods_pos, pacman_view = EatFood(map, start_pos, foods_pos, pacman_view)
+                
+            movable_pos = get_neighbors(start_pos,map)
+
+            if (next_pos in movable_pos) and (check_safe_move(next_pos, monsters_pos) == True): #when Pacmnan is in a safe position with monsters
+                
                 start_pos = next_pos #Move Pacman to the next position
+                #Update the view of Pacman
+                pacman_view = Update_Pacman_view(map, pacman_view, start_pos)
+                Pacman_path.append(start_pos) 
         
             else: #When the monsters is near Pacman, Pacman have to change the moving path
-                movable_pos = get_neighbors(start_pos,pacman_view)
+                movable_pos = get_neighbors(start_pos, map)
 
                 for pos in movable_pos:
                     if check_safe_move(pos, monsters_pos) == True:
                         start_pos = pos #Pacman move
                         break
-            
-            if (start_pos in monsters_pos):
-                print (" +++++++ GAME OVER ++++++++++")
-                status = "Lose"
-                return Pacman_path, Monster_path,status
-            
-            #After that, all the monsters moved
-            monsters_pos, map = MonsterMove(map, monsters_pos)
-            Monster_path.append(monsters_pos)
-            print ("Monster positon: ", monsters_pos)
 
-        #Update the view of Pacman
-        pacman_view = Update_Pacman_view(map, pacman_view, start_pos)
-        Pacman_path.append(start_pos) 
-        if (len(foods_pos) == 0):
-            print ("++++++++++ WIN +++++++++++++++")
-            status = "win"
-            break
+
+                       #Update the view of Pacman
+                pacman_view = Update_Pacman_view(map, pacman_view, start_pos)
+                Pacman_path.append(start_pos)
+                if start_pos in foods_pos:
+                    map, foods_pos, pacman_view = EatFood(map, start_pos, foods_pos, pacman_view)
+
+                if (start_pos in monsters_pos):
+                    print (" +++++++ GAME OVER ++++++++++")
+                    print (start_pos)
+                    status = "Lose condition 2"
+                    return Pacman_path, Monster_path,status 
     return Pacman_path, Monster_path, status
 
 

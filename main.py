@@ -26,6 +26,11 @@ if __name__ == '__main__':
     start_point = time.time()
     pacman_path, monsters_path, status = controller._pathFinder.get_path(level)
     path_calculation_time = time.time() - start_point
+
+    print (len(pacman_path))
+    print (len(monsters_path))
+    print (pacman_path)
+    print (monsters_path)
     print("Path calculation time: ", path_calculation_time)
     
     #Graphic render

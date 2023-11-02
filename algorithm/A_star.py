@@ -1,5 +1,3 @@
-from helper import get_map
-
 #The heuristic function is the distance between the start position and goal position
 def find_heuristic (start, goal):
     distance = ((start[0] - goal[0])**2 + (start[1] - goal[1])**2)**0.5

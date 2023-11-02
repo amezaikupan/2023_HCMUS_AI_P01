@@ -1,5 +1,3 @@
-import pygame
-
 #Read size, map and position of pacman from txt file
 def readMap(filename):
     try:
@@ -18,5 +16,5 @@ def readMap(filename):
     except Exception as e:
         print(e)
         
-#path = "2023_HCMUS_AI_P01/test/lv1_map1.txt"
-#readMap(path)
+def calculateCoor(in_coords, in_size=40):
+    return in_coords[1] * in_size, in_coords[0] * in_size

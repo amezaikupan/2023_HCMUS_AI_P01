@@ -7,7 +7,7 @@ CELL_SIZE = 40
 if __name__ == '__main__':
     level = input("Level: ")
     map = input("Map: ")
-    path = f"2023_HCMUS_AI_P01/test/lv{level}_map{map}.txt"
+    path = f"test/lv{level}_map{map}.txt"
     
     #Get intitial positions of pacman, monsters, food and walls
     controller = GameController(path)
@@ -31,11 +31,11 @@ if __name__ == '__main__':
     #Graphic render
     #Initialize wall:
     for pos in controller._wall_positions:
-        environment.setWall(Wall(pos[1], pos[0], CELL_SIZE, environment, f"2023_HCMUS_AI_P01/assets/wall.png"))
+        environment.setWall(Wall(pos[1], pos[0], CELL_SIZE, environment, f"assets/wall.png"))
         
     #Initialize food:
     for food_pos in controller._food_positions:
-        environment.setFood(Food(food_pos[1] * CELL_SIZE, food_pos[0] * CELL_SIZE, CELL_SIZE, environment, f"2023_HCMUS_AI_P01/assets/food.png"))
+        environment.setFood(Food(food_pos[1] * CELL_SIZE, food_pos[0] * CELL_SIZE, CELL_SIZE, environment, f"assets/food.png"))
         
     #Initialize monsters:
     for pos, monster_pos in enumerate(controller._monster_spawns):
@@ -48,7 +48,7 @@ if __name__ == '__main__':
             controller._monster_spawns[pos][0] * CELL_SIZE,
             CELL_SIZE,
             environment,
-            f"2023_HCMUS_AI_P01/assets/ghost.png",
+            f"assets/ghost.png",
             monster_path,
             controller
         )
@@ -61,7 +61,7 @@ if __name__ == '__main__':
         controller._pacmanPos[0] * CELL_SIZE,
         CELL_SIZE,
         environment,
-        f"2023_HCMUS_AI_P01/assets/pacman.png",
+        f"assets/pacman.png",
         pacman_path,
         controller
     )

@@ -1,3 +1,5 @@
+from algorithm.Level3 import Handle_Level_03
+
 def handleLv1(map, pacmanPos):
     pacman_path = [(10, 2), (9,2), (8,2), (7,2), (6,2), (6,3), (5, 3), (4, 3), (3, 3), (2, 3), (1, 3), (1,4), (1, 5), (1, 6), (2, 6), (3, 6), 
 (4, 6), (5, 6), (6, 6), (7, 6), (8, 6), (9, 6), (10, 6), (10, 7), (10, 8), (10, 9), (10, 10), (9,10), (8,10)]
@@ -9,7 +11,8 @@ def handleLv2(map, pacmanPos):
     return None
 
 def handleLv3(map, pacmanPos):
-    return None
+    pacman_path, monster_path, status = Handle_Level_03(map, pacmanPos)
+    return pacman_path, monster_path, status
 
 def handleLv4(map, pacmanPos):
     pacman_path = [(9, 10), (9, 11), (9, 12), (9, 13), (8, 13), (7, 13), (6, 13), (5, 13), (5, 14), (5, 15), (5, 16), (6, 16), (7, 16), (7, 

@@ -71,12 +71,6 @@ if __name__ == '__main__':
     environment.setLevel(level)
     environment.setMap(map)
     environment.start()
-    
-    
-    
-        
-    
-        
-    
+ 
     
     

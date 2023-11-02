@@ -142,7 +142,7 @@ class MovableGameObject(GameObject):
         pass
     
     def draw(self):
-        #self._image = pygame.transform.scale(self._image, (self._size, self._size)) #rescale the image to fit
+        self._image = pygame.transform.scale(self._image, (self._size, self._size)) #rescale the image to fit
         self._surface.blit(self._image, self.getShape()) #blit the image on the screen
              
 class Wall(GameObject):
@@ -196,11 +196,11 @@ class Pacman(MovableGameObject):
         monsters = self._environment.getMonster()
         pacman = self._environment.getPacman()
         for monster in monsters:
-            if pacman.getShape().colliderect(monster.getShape()):
+            if pacman.getPosition() == monster.getPosition():
                 self._environment.endGame()
     
     def draw(self):
-        self._image = pygame.transform.rotate(self._image, self._curDirection.value)
+        #self._image = pygame.transform.rotate(self._image, self._curDirection.value)
         super(Pacman, self).draw()
                         
 class Monster(MovableGameObject):

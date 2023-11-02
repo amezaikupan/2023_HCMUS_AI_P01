@@ -1,5 +1,5 @@
-from A_star import find_heuristic,get_neighbors, a_star_algorithm
-from helper import get_map
+from algorithm.A_star import find_heuristic,get_neighbors, a_star_algorithm
+from graphic.util import readMap
 import random
 
 #Find all the position in the map for all types of object
@@ -211,29 +211,10 @@ def Handle_Level_03(map, start):
         if (len(foods_pos) == 0):
             print ("++++++++++ WIN +++++++++++++++")
             status = "win"
-            break;
+            break
     return Pacman_path, Monster_path, status
 
-map , size, pos= get_map("../test/lv3_map2.txt")
 
-for line in map:
-    print (line)
-start_pos = tuple(pos) 
 
-pacman_view = Init_Pacman_view(map)
-pacman_view = Update_Pacman_view(map, pacman_view, start_pos)
 
-# start = (16, 18)
-# goal = (9, 17)
-# path_01 = a_star_algorithm(map, start, goal)
-# print (path_01)
-Pacman_path, monster_path, status = Handle_Level_03(map, pos)
-
-print ("Pacman path:")
-print (Pacman_path)
-print (len(Pacman_path))
-print ("Monsters path:")
-print (monster_path)
-print (len(monster_path))
-print ("Status: ", status)
 

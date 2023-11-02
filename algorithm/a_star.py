@@ -76,5 +76,3 @@ def a_star_algorithm(map, start, goal):
             frontier.sort(key = lambda x: x[1] + find_heuristic(x[0],food_pos), reverse = False)
 
     return []
-
-

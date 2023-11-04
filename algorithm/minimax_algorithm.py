@@ -2,8 +2,7 @@
 # agents position
 # points
 # in a state.
-import helper
-
+import algorithm.helper
 import numpy as np
 
 # TODO: Missing recorder function to pass to path (search.py)
@@ -176,7 +175,7 @@ class MinimaxAgents():
                 # TODO: Calculate distance to food to determine weight
                 # Add to value if can get closer to food
                 for food in visibleFoodPosition:
-                    value += helper.Measure.getDistanceBetween2Points(food, position) * foodWeight
+                    value += algorithm.helper.Measure.getDistanceBetween2Points(food, position) * foodWeight
                     
                 # print("Food is visible")
                 # value += 1000
@@ -186,17 +185,17 @@ class MinimaxAgents():
                 # TODO: Calculate distance to ghost to determine weight
                 # Take from value if get closer to ghost
                 for ghost in visibleGhostPosition:
-                    value += helper.Measure.getDistanceBetween2Points(ghost, position) * ghostWeight
+                    value += algorithm.helper.Measure.getDistanceBetween2Points(ghost, position) * ghostWeight
                 # print("Ghost is visible")
                 # value -= 100
 
-            print("VALUE: " + str(value) + str(position))
+            # print("VALUE: " + str(value) + str(position))
 
             return value
 
         else:
             value = 10000
-            value += helper.Measure.getDistanceBetween2Points(position, gameState.getPacmanState())
+            value += algorithm.helper.Measure.getDistanceBetween2Points(position, gameState.getPacmanState())
 
             # print("GHOST VALUE: " + str(value))
             return value            
@@ -220,7 +219,7 @@ class MinimaxAgents():
 
         # Maximizing agent aka. pacman
         if index == 0:
-            print("INITIAL PACMAN POS" + str(position))
+            # print("INITIAL PACMAN POS" + str(position))
             bestVal = float('-inf')
             bestPos = ()
 
@@ -323,11 +322,10 @@ def run(pacmanPos, inMap):
         ghostsPos = gameState.getGhostState()    
         for ghost in ghosts:
             newGhostPos = ghost.getAction(gameState, ghostsPos[counter - 1], counter)
-            # print("New ghost pos")
-
-            # print(newGhostPos)
+            print("New ghost pos")
+            print(newGhostPos)
             gameState.updateGhostSate(newGhostPos[0], counter)
-            currentGhostPath.append(newGhostPos)
+            currentGhostPath.append(newGhostPos[0])
             counter += 1
         ghostPath.append(currentGhostPath)
         

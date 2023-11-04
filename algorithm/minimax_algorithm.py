@@ -351,7 +351,7 @@ def run(pacmanPos, inMap):
     print(ghostPath)           
     return gameEndState, pacmanPath, ghostPath
 
-mapTest = [[0,1,1,2,1,3],[0,0,0,0,0,0],[0,0,0,0,0,0]]
+mapTest = [[0,0,0,2,1,3],[0,0,0,0,0,0],[0,0,0,0,0,0]]
 pacmanTestPos = 0,0
 run(pacmanTestPos, mapTest)    
         

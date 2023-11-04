@@ -1,4 +1,4 @@
-from algorithm.A_star import find_heuristic,get_neighbors, a_star_algorithm
+from algorithm.a_star import find_heuristic,get_neighbors, a_star_algorithm
 from graphic.util import readMap
 import random
 import math
@@ -247,7 +247,6 @@ def Handle_Level_03(map, start):
 
         
     return Pacman_path, Monster_path, status
-
 
 
 

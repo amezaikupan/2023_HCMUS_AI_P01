@@ -25,7 +25,7 @@ def get_neighbors(pos, map):
         y = candidate[1]
 
         #Check the candidate is in the map, is the food or path.
-        if( 0 <= x < len(map) and 0 <= y < len(map[0])  and (map[x][y] in (0,2)) ):
+        if( 0 <= x < len(map) and 0 <= y < len(map[0])  and (map[x][y] != 1) ):
                 neighbors.append((x,y)) # If true, it is a valid neighbor.
 
     return neighbors
@@ -33,9 +33,6 @@ def get_neighbors(pos, map):
 def a_star_algorithm(map, start, goal):
     start_pos = tuple(start)
     food_pos = tuple(goal)
-
-    print ("Start:", start_pos)
-    print ("Goal: ", goal)
 
     total_cost = 0
 
@@ -76,5 +73,4 @@ def a_star_algorithm(map, start, goal):
             frontier.sort(key = lambda x: x[1] + find_heuristic(x[0],food_pos), reverse = False)
 
     return []
-
 

@@ -3,6 +3,7 @@
 # points
 # in a state.
 import helper
+
 import numpy as np
 
 # TODO: Missing recorder function to pass to path (search.py)
@@ -352,7 +353,7 @@ def run(pacmanPos, inMap):
     print(ghostPath)           
     return gameEndState, pacmanPath, ghostPath
 
-mapTest = [[0,1,1,2,1,3],[0,0,0,0,0,0]]
-pacmanTestPos = 0,0
-run(pacmanTestPos, mapTest)    
+# mapTest = [[0,1,1,2,1,3],[0,0,0,0,0,0]]
+# pacmanTestPos = 0,0
+# run(pacmanTestPos, mapTest)    
         

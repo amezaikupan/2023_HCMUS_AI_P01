@@ -2,10 +2,19 @@
 # agents position
 # points
 # in a state.
-import helper
+# import helper
 import numpy as np
 
 # TODO: Missing recorder function to pass to path (search.py)
+
+class Measure():
+    def getDistanceBetween2Points(point1, point2):
+
+        # Manhattan distance
+        distance = abs(point1[0] - point2[0]) + abs(point1[1] - point2[1])
+        # print("Distance: " + str(distance))
+        return distance
+
 class GameState():
     def __init__(self, pacmanPos, inMap):
         # Pacman position = 0
@@ -108,13 +117,13 @@ class MinimaxAgents():
     def __init__(self, index = 0):
         # Set default index is Pacman's index
         self.index = index 
-        self.height = 2
+        self.height = 1
     
     def getVision(self, position : tuple, gameState : GameState):
         gameMap = gameState.getMap()
         if(self.index == 0):
             # position = gameState.getPacmanState()
-            sideVision = 7 // 2
+            sideVision = 14
 
             startRow = max(position[0] - sideVision, 0)
             endRow = min(sideVision + position[0] + 1, gameMap.shape[0])
@@ -166,7 +175,7 @@ class MinimaxAgents():
         # # TODO: How to process pacman eating food??
 
         if self.index == 0:
-            value = -10000
+            value = -1000
 
             foodWeight = 1.0
             ghostWeight = -1.0
@@ -175,34 +184,32 @@ class MinimaxAgents():
                 # TODO: Calculate distance to food to determine weight
                 # Add to value if can get closer to food
                 for food in visibleFoodPosition:
-                    value += helper.Measure.getDistanceBetween2Points(food, position) * foodWeight
+                    value += foodWeight / (Measure.getDistanceBetween2Points(food, position) + 1e-6)
+                    print(foodWeight / (Measure.getDistanceBetween2Points(food, position) + 1e-6))
                     
                 # print("Food is visible")
-                # value += 1000
 
             visibleGhostPosition = self.isGhostVisible(position, gameState)
             if(len(visibleGhostPosition) != 0):
                 # TODO: Calculate distance to ghost to determine weight
                 # Take from value if get closer to ghost
+                ghostDistance = []
                 for ghost in visibleGhostPosition:
-                    value += helper.Measure.getDistanceBetween2Points(ghost, position) * ghostWeight
+                    ghostDistance.append(Measure.getDistanceBetween2Points(ghost, position))                           
+                    # value += ghostWeight/(Measure.getDistanceBetween2Points(ghost, position) + 1e-5)
                 # print("Ghost is visible")
-                # value -= 100
+                if min(ghostDistance) < 5:
+                    return 99999
 
             # print("VALUE: " + str(value) + str(position))
 
             return value
-
         else:
-            value = 10000
-            value += helper.Measure.getDistanceBetween2Points(position, gameState.getPacmanState())
+            value = 1000
+            value += Measure.getDistanceBetween2Points(position, gameState.getPacmanState())
 
             # print("GHOST VALUE: " + str(value))
             return value            
-
-
-
-
 
     def getAction(self, gameState : GameState, position, index, height = 0):
         # TODO: check terminal state  
@@ -299,9 +306,14 @@ def run(pacmanPos, inMap):
     ghostPath.append(fistGhostPath)
     
     gameEndState = 0
+    frame = 0
 
     # While run game
     while(True):
+        frame += 1
+        if frame == 100:
+            break
+
         pacmanPos = gameState.getPacmanState()
         newPacmanPos = pacman.getAction(gameState, pacmanPos, 0)
         if(newPacmanPos[1] == {0 or 1}):
@@ -349,9 +361,9 @@ def run(pacmanPos, inMap):
 
     print("Ghost Path:")
     print(ghostPath)           
-    return gameEndState, pacmanPath, ghostPath
+    return pacmanPath, ghostPath, gameEndState
 
-mapTest = [[0,0,0,2,1,3],[0,0,0,0,0,0],[0,0,0,0,0,0]]
-pacmanTestPos = 0,0
-run(pacmanTestPos, mapTest)    
+# mapTest = [[0,0,0,2,1,3],[0,0,1,0,0,0],[0,0,0,0,0,0]]
+# pacmanTestPos = 0,0
+# run(pacmanTestPos, mapTest)    
         

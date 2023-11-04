@@ -189,7 +189,7 @@ class MinimaxAgents():
                 # print("Ghost is visible")
                 # value -= 100
 
-            print("VALUE: " + str(value) + str(position))
+            # print("VALUE: " + str(value) + str(position))
 
             return value
 
@@ -219,7 +219,7 @@ class MinimaxAgents():
 
         # Maximizing agent aka. pacman
         if index == 0:
-            print("INITIAL PACMAN POS" + str(position))
+            # print("INITIAL PACMAN POS" + str(position))
             bestVal = float('-inf')
             bestPos = ()
 
@@ -322,11 +322,10 @@ def run(pacmanPos, inMap):
         ghostsPos = gameState.getGhostState()    
         for ghost in ghosts:
             newGhostPos = ghost.getAction(gameState, ghostsPos[counter - 1], counter)
-            # print("New ghost pos")
-
-            # print(newGhostPos)
+            print("New ghost pos")
+            print(newGhostPos)
             gameState.updateGhostSate(newGhostPos[0], counter)
-            currentGhostPath.append(newGhostPos)
+            currentGhostPath.append(newGhostPos[0])
             counter += 1
         ghostPath.append(currentGhostPath)
         
@@ -352,7 +351,7 @@ def run(pacmanPos, inMap):
     print(ghostPath)           
     return gameEndState, pacmanPath, ghostPath
 
-mapTest = [[0,1,1,2,1,3],[0,0,0,0,0,0]]
+mapTest = [[0,1,1,2,1,3],[0,0,0,0,0,0],[0,0,0,0,0,0]]
 pacmanTestPos = 0,0
 run(pacmanTestPos, mapTest)    
         

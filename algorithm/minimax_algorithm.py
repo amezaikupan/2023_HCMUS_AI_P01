@@ -2,10 +2,24 @@
 # agents position
 # points
 # in a state.
-import algorithm.helper
+# import helper
 import numpy as np
+import random
 
 # TODO: Missing recorder function to pass to path (search.py)
+
+class Measure():
+    def ManhattanDistance(point1, point2):
+
+        # Manhattan distance
+        distance = abs(point1[0] - point2[0]) + abs(point1[1] - point2[1])
+        # print("Distance: " + str(distance))
+        return distance
+    
+    def EuclidDistance(point1, point2):
+        distance = ((point1[0] - point2[0])**2 + (point1[1] - point2[1])**2)**0.5
+        return distance
+
 class GameState():
     def __init__(self, pacmanPos, inMap):
         # Pacman position = 0
@@ -30,8 +44,6 @@ class GameState():
                 if inMap[row][col] == 2:
                     self.foodPosition.append((row, col))
                     foodCounter += 1
-
-        print("FOOD POSITION" + str(self.foodPosition))
 
     def getPacmanState(self):
         # print("Pacman state " + str(self.agentsPosition[0]))
@@ -96,8 +108,6 @@ class GameState():
         self.map[index[0]][index[1]] = value
 
     def updateFoodEaten(self, index : tuple):
-        print(self.foodPosition)
-        print(index)
         self.foodPosition.remove(index)
 
     # def IsEnd():
@@ -114,7 +124,7 @@ class MinimaxAgents():
         gameMap = gameState.getMap()
         if(self.index == 0):
             # position = gameState.getPacmanState()
-            sideVision = 7 // 2
+            sideVision = 14
 
             startRow = max(position[0] - sideVision, 0)
             endRow = min(sideVision + position[0] + 1, gameMap.shape[0])
@@ -166,43 +176,44 @@ class MinimaxAgents():
         # # TODO: How to process pacman eating food??
 
         if self.index == 0:
-            value = -10000
+            value = -1000
 
             foodWeight = 1.0
             ghostWeight = -1.0
             visibleFoodPosition = self.isFoodVisible(position, gameState)
+            foodDistance = []
             if(len(visibleFoodPosition) != 0):
                 # TODO: Calculate distance to food to determine weight
                 # Add to value if can get closer to food
                 for food in visibleFoodPosition:
-                    value += algorithm.helper.Measure.getDistanceBetween2Points(food, position) * foodWeight
-                    
+                    # foodDistance.append( (Measure.EuclidDistance(food, position)))
+                    foodDistance.append(Measure.EuclidDistance(food, position))
+                    # value += foodWeight / (Measure.EuclidDistance(food, position) + 1e6)
+                
                 # print("Food is visible")
-                # value += 1000
-
+                value += foodWeight/(min(foodDistance) + 1e-1)
+                print("Increment value", value)
+                
             visibleGhostPosition = self.isGhostVisible(position, gameState)
             if(len(visibleGhostPosition) != 0):
                 # TODO: Calculate distance to ghost to determine weight
                 # Take from value if get closer to ghost
+                ghostDistance = []
                 for ghost in visibleGhostPosition:
-                    value += algorithm.helper.Measure.getDistanceBetween2Points(ghost, position) * ghostWeight
-                # print("Ghost is visible")
-                # value -= 100
+                    ghostDistance.append(Measure.ManhattanDistance(ghost, position))                           
+                    # value += ghostWeight/(Measure.getDistanceBetween2Points(ghost, position) + 1e-5)
+                if min(ghostDistance) <= 1:
+                    return -9999
 
             # print("VALUE: " + str(value) + str(position))
 
             return value
-
         else:
-            value = 10000
-            value += algorithm.helper.Measure.getDistanceBetween2Points(position, gameState.getPacmanState())
+            value = 1000
+            value += Measure.ManhattanDistance(position, gameState.getPacmanState())
 
             # print("GHOST VALUE: " + str(value))
             return value            
-
-
-
-
 
     def getAction(self, gameState : GameState, position, index, height = 0):
         # TODO: check terminal state  
@@ -229,6 +240,7 @@ class MinimaxAgents():
             successors = gameState.getValidSuccessor(position)
             # print("Get pacman successors: ")
             # print(successors)
+            actions = []
             for successor in successors:
                 # value = self.getAction()
 
@@ -248,10 +260,15 @@ class MinimaxAgents():
                 value = self.getAction(gameState, successor, 0, height + 1)
                 # print("ACESSING PACMAN VALUE: " + str(value))
                 bestVal = max(value[1], bestVal)
+                actions.append((value[1], successor))
 
-                if(bestVal == value[1]):
-                    bestPos = successor
-
+                # if(bestVal == value[1]):
+                #     bestPos = successor
+            
+            # get best actions
+            bestActions = [pair[1] for pair in actions if pair[0] == bestVal]
+            print(bestActions)
+            bestPos = random.choice(bestActions)
             return bestPos, bestVal
         
         # Minimizing agents aka. Ghosts
@@ -299,11 +316,17 @@ def run(pacmanPos, inMap):
     ghostPath.append(fistGhostPath)
     
     gameEndState = 0
+    frame = 0
 
     # While run game
     while(True):
+        frame += 1
+        if frame == 100:
+            break
+
         pacmanPos = gameState.getPacmanState()
         newPacmanPos = pacman.getAction(gameState, pacmanPos, 0)
+        print(newPacmanPos[1])
         if(newPacmanPos[1] == {0 or 1}):
             gameEndState = newPacmanPos[0]
             break
@@ -349,9 +372,9 @@ def run(pacmanPos, inMap):
 
     print("Ghost Path:")
     print(ghostPath)           
-    return gameEndState, pacmanPath, ghostPath
+    return pacmanPath, ghostPath, gameEndState
 
-# mapTest = [[0,1,1,2,1,3],[0,0,0,0,0,0]]
+# mapTest = [[0,0,0,2,1,3],[0,0,1,0,0,0],[0,0,0,0,0,0]]
 # pacmanTestPos = 0,0
 # run(pacmanTestPos, mapTest)    
         

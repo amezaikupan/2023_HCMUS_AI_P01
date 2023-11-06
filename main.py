@@ -26,11 +26,6 @@ if __name__ == '__main__':
     start_point = time.time()
     pacman_path, monsters_path, status = controller._pathFinder.get_path(level)
     path_calculation_time = time.time() - start_point
-
-    print (len(pacman_path))
-    print (len(monsters_path))
-    print (pacman_path)
-    print (monsters_path)
     print("Path calculation time: ", path_calculation_time)
     
     #Graphic render
@@ -44,9 +39,7 @@ if __name__ == '__main__':
         
     #Initialize monsters:
     for pos, monster_pos in enumerate(controller._monster_spawns):
-        monster_path = [
-            calculateCoor(sublist[pos]) for sublist in monsters_path
-        ]
+        monster_path = [calculateCoor(sublist[pos]) for sublist in monsters_path]
 
         monster = Monster(
             controller._monster_spawns[pos][1] * CELL_SIZE, 

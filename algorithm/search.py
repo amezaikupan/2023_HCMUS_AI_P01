@@ -1,9 +1,9 @@
 from algorithm.Level3 import Handle_Level_03
+from algorithm.Level1 import Handle_level_01
 from algorithm.minimax_algorithm import run
 
 def handleLv1(map, pacmanPos):
-    pacman_path = [(10, 2), (9,2), (8,2), (7,2), (6,2), (6,3), (5, 3), (4, 3), (3, 3), (2, 3), (1, 3), (1,4), (1, 5), (1, 6), (2, 6), (3, 6), 
-(4, 6), (5, 6), (6, 6), (7, 6), (8, 6), (9, 6), (10, 6), (10, 7), (10, 8), (10, 9), (10, 10), (9,10), (8,10)]
+    pacman_path = Handle_level_01(map, pacmanPos)
     monster_path = []
     status = None
     return pacman_path, monster_path, status

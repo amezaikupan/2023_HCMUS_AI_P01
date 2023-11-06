@@ -306,7 +306,7 @@ class Environment:
                 text_rect = text.get_rect(center=(self._width / 2, self._height / 2))
                 self._screen.blit(text, text_rect)
             pygame.display.flip()
-            self._clock.tick(120)
+            self._clock.tick(390)
             self._screen.fill((0,0,0))
             self.handleEvent()
         print("Score:", self._score)

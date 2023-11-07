@@ -1,19 +1,10 @@
-# Create game state class to store: 
-# agents position
-# points
-# in a state.
-# import helper
 import numpy as np
 import random
 
-# TODO: Missing recorder function to pass to path (search.py)
-
 class Measure():
     def ManhattanDistance(point1, point2):
-
         # Manhattan distance
         distance = abs(point1[0] - point2[0]) + abs(point1[1] - point2[1])
-        # print("Distance: " + str(distance))
         return distance
     
     def EuclidDistance(point1, point2):
@@ -46,7 +37,6 @@ class GameState():
                     foodCounter += 1
 
     def getPacmanState(self):
-        # print("Pacman state " + str(self.agentsPosition[0]))
         return self.agentsPosition[0]
     
     def getGhostState(self):
@@ -70,19 +60,14 @@ class GameState():
     def getValidSuccessor(self, position : tuple):
         possibleDirections = [(0,1), (0,-1), (1, 0), (-1, 0)]
 
-        # currentState = self.agentsPosition[agentID]
         agentSuccessors = []
-        
         for direction in possibleDirections:
-            # print(position)
-
             newPositionRow = position[0] + direction[0]
             newPositionCol = position[1] + direction[1]
 
             newPosition = (newPositionRow, newPositionCol)
 
             if self.isAbleToMove(newPosition):
-                # print("Success position row: " + str(newPositionCol) + " New position col: " + str(newPositionRow))
                 agentSuccessors.append(newPosition)
         return agentSuccessors
     
@@ -110,30 +95,22 @@ class GameState():
     def updateFoodEaten(self, index : tuple):
         self.foodPosition.remove(index)
 
-    # def IsEnd():
-    #     #TODO: to implement   
-        
-# Create pacman agents class
 class MinimaxAgents():
     def __init__(self, index = 0):
-        # Set default index is Pacman's index
+        # Set default index is Pacman's index = 0
         self.index = index 
         self.height = 2
     
     def getVision(self, position : tuple, gameState : GameState):
         gameMap = gameState.getMap()
         if(self.index == 0):
-            # position = gameState.getPacmanState()
-            sideVision = 14
+            sideVision = 7
 
             startRow = max(position[0] - sideVision, 0)
             endRow = min(sideVision + position[0] + 1, gameMap.shape[0])
             startCol = max(position[1] - sideVision, 0)
             endCol = min(position[1] + sideVision + 1, gameMap.shape[1])
 
-            # print(gameMap)
-            # print(str(startRow) + str(endRow) + str(startCol) + str(endCol))
-            # visionMatrix = gameMap[startRow:endRow, startCol:endCol]
             return [startRow, endRow, startCol, endCol]
         
 
@@ -148,7 +125,6 @@ class MinimaxAgents():
         
         return visibleFoodPositions
     
-    # TODO: Reprogram!!!
     def isGhostVisible(self, position : tuple, gameState : GameState):
         ghostPositions = gameState.getGhostState()
         vision = self.getVision(position, gameState)
@@ -160,140 +136,84 @@ class MinimaxAgents():
         
         return visibleGhostPositions
     
-    def evaluate(self, position, gameState : GameState, index):
-        # if self.index == 0:
-        #     # If pacman won
-        #     if gameState.getNumberOfFood == 0:
-        #         return 1, gameState.getPoints()
-            
-        #     # If pacman is eaten
-        #     agentsPosition = gameState.getAgentsStates()
-        #     if agentsPosition[0] in agentsPosition[1:]:
-        #         return 0, gameState.getPoints()      
-            
-        # return -1
-        # # If pacman is stuck and other advance stages
-        # # TODO: How to process pacman eating food??
-
+    def evaluate(self, position, gameState : GameState):
+        # Pacman is a maximize agent
         if self.index == 0:
             value = -1000
-
             foodWeight = 1.0
-            ghostWeight = -1.0
             visibleFoodPosition = self.isFoodVisible(position, gameState)
             foodDistance = []
             if(len(visibleFoodPosition) != 0):
-                # TODO: Calculate distance to food to determine weight
-                # Add to value if can get closer to food
                 for food in visibleFoodPosition:
-                    # foodDistance.append( (Measure.EuclidDistance(food, position)))
                     foodDistance.append(Measure.EuclidDistance(food, position))
-                    # value += foodWeight / (Measure.EuclidDistance(food, position) + 1e6)
-                
-                # print("Food is visible")
                 value += foodWeight/(min(foodDistance) + 1e-1)
-                print("Increment value", value)
-                
+
             visibleGhostPosition = self.isGhostVisible(position, gameState)
             if(len(visibleGhostPosition) != 0):
-                # TODO: Calculate distance to ghost to determine weight
-                # Take from value if get closer to ghost
                 ghostDistance = []
                 for ghost in visibleGhostPosition:
                     ghostDistance.append(Measure.ManhattanDistance(ghost, position))                           
-                    # value += ghostWeight/(Measure.getDistanceBetween2Points(ghost, position) + 1e-5)
+
                 if min(ghostDistance) <= 1:
                     return -9999
-
-            # print("VALUE: " + str(value) + str(position))
-
+                else: 
+                    value += min(ghostDistance)
             return value
         else:
+            # Ghost is a minimize agent
             value = 1000
             value += Measure.ManhattanDistance(position, gameState.getPacmanState())
-
-            # print("GHOST VALUE: " + str(value))
             return value            
 
-    def getAction(self, gameState : GameState, position, index, height = 0):
-        # TODO: check terminal state  
-        # eval = self.evaluate(gameState)
-        # # print(eval)
-        # if(eval == {1 or 0}):
-        #     return eval    
-        
+    def getAction(self, gameState : GameState, position, index, height = 0, alpha = float('-inf'), beta = float('inf')):
         # check height
         if height == self.height:
-            value = self.evaluate(position, gameState, index)
-            # print("Get to leaf" + str(value))
+            value = self.evaluate(position, gameState)
+
             return position, value
 
         # Maximizing agent aka. pacman
         if index == 0:
-            # print("INITIAL PACMAN POS" + str(position))
             bestVal = float('-inf')
             bestPos = ()
 
-            # TODO: what are the "child state" that pacman should consider
-
             # Get valid successor for pacman
             successors = gameState.getValidSuccessor(position)
-            # print("Get pacman successors: ")
-            # print(successors)
             actions = []
             for successor in successors:
-                # value = self.getAction()
 
-                # if(self.isFoodVisible(successor, gameState)):
-                #     # TODO: Calculate distance to food to determine weight
-                #     # Add to value if can get closer to food
-                #     value += 1000
-
-                # if(self.isGhostVisible(successor, gameState)):
-                #     # TODO: Calculate distance to ghost to determine weight
-                #     # Take from value if get closer to ghost
-                #     value -= 100
-
-
-                # print("Point: ")
-
-                value = self.getAction(gameState, successor, 0, height + 1)
-                # print("ACESSING PACMAN VALUE: " + str(value))
+                value = self.getAction(gameState, successor, 0, height +  1, alpha, beta)
                 bestVal = max(value[1], bestVal)
                 actions.append((value[1], successor))
 
-                # if(bestVal == value[1]):
-                #     bestPos = successor
-            
+                alpha = max(alpha, value[1])
+                if beta <= alpha:
+                    break
+
             # get best actions
             bestActions = [pair[1] for pair in actions if pair[0] == bestVal]
-            print(bestActions)
             bestPos = random.choice(bestActions)
             return bestPos, bestVal
         
         # Minimizing agents aka. Ghosts
         else:
-            # Make decision for a Ghost
+            next_ghost = index + 1
+            if next_ghost == gameState.getNumberOfAgents() -1:
+                next_ghost = 0 # Pacman index is 0
+            
             bestVal = float('inf')
+            value = bestVal
             bestPos = ()
-
-            # Get valid successor for ghost
             successors = gameState.getValidSuccessor(position)
             for successor in successors:   
-
-                # TODO: Does number of food effect ghosts' decisions?
-                # TODO: Ask sensei if this is wrong because minimax is recursive OMG
-                # I think I'm a bit mistaken so let's email sensei tonight
-                # No need for recursive search because pacman can only move
-                # 1 position to 4 adjacent direction
-                # value += self.minimax(depth + 1, gameState)
-                value = self.getAction(gameState,successor, index, height + 1)
-                # print("GHOST VALUE: " + str(value))
+                value = self.getAction(gameState, successor, index, height + 1, alpha, beta)
                 bestVal = min(bestVal, value[1])
-
-                # print("BEST VAL" + str(bestVal))
                 if(bestVal == value[1]):
                     bestPos = successor
+
+                beta = min(beta, value[1])
+                if beta <= alpha:
+                    break
 
             return bestPos, bestVal
 
@@ -373,8 +293,4 @@ def run(pacmanPos, inMap):
     print("Ghost Path:")
     print(ghostPath)           
     return pacmanPath, ghostPath, gameEndState
-
-# mapTest = [[0,0,0,2,1,3],[0,0,1,0,0,0],[0,0,0,0,0,0]]
-# pacmanTestPos = 0,0
-# run(pacmanTestPos, mapTest)    
         

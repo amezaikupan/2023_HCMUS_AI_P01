@@ -1,8 +1,8 @@
 from algorithm.Level3 import Handle_Level_03
 from algorithm.Level1 import Handle_level_01
 from algorithm.Level2 import Handle_level_02
-import algorithm.level_04_algorithm_02 
-import algorithm.level_04_algorithm_01
+import algorithm.level4_01 
+import algorithm.level4_02
 
 def handleLv1(map, pacmanPos):
     pacman_path = Handle_level_01(map, pacmanPos)
@@ -24,8 +24,8 @@ def handleLv3(map, pacmanPos):
 def handleLv4(map, pacmanPos):
     mode = input("Mode (1/2)?")
     if mode == 1:
-        pacman_path, monster_path, status = algorithm.level_04_algorithm_01.run(pacmanPos, map)
+        pacman_path, monster_path, status = algorithm.level4_01.run(pacmanPos, map)
     else:
-        pacman_path, monster_path, status = algorithm.level_04_algorithm_02.run(pacmanPos, map)
+        pacman_path, monster_path, status = algorithm.level4_02.run(pacmanPos, map)
 
     return pacman_path, monster_path, status

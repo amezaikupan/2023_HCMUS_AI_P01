@@ -72,12 +72,11 @@ def a_star_algorithm(map, start, goal):
         
             frontier.sort(key = lambda x: x[1] , reverse = False)
 
-    #  #Trace back the road to from current position to its preveious position
-    # while current_pos in previous_pos:
-    #     path.append(current_pos)
-    #     current_pos = previous_pos[current_pos]
-    # path.append(current_pos)
-    # #Reverse the path 
-    return []
+    #Get the current path
+    while current_pos in previous_pos:
+        path.append(current_pos)
+        current_pos = previous_pos[current_pos]
+    path.append(current_pos)
+    return path[::-1]
 
 

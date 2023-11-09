@@ -13,7 +13,6 @@ def find_food(map):
 #Function to find all the neighbors of a position in map
 #A valid neighbor is a position located in the map and to the left, down, up, or right of the origin position
 def get_neighbors(pos, map):
-
     x,y = pos
     neighbors = []
 

@@ -22,8 +22,8 @@ def handleLv3(map, pacmanPos):
     return pacman_path, monster_path, status
 
 def handleLv4(map, pacmanPos):
-    mode = input("Mode (1/2)?")
-    if mode == 1:
+    algorithm = input("Algorithm (1/2)?")
+    if algorithm == 1:
         pacman_path, monster_path, status = algorithm.level4_01.run(pacmanPos, map)
     else:
         pacman_path, monster_path, status = algorithm.level4_02.run(pacmanPos, map)

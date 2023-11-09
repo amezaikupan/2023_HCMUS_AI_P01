@@ -39,9 +39,7 @@ if __name__ == '__main__':
         
     #Initialize monsters:
     for pos, monster_pos in enumerate(controller._monster_spawns):
-        monster_path = [
-            calculateCoor(sublist[pos]) for sublist in monsters_path
-        ]
+        monster_path = [calculateCoor(sublist[pos]) for sublist in monsters_path]
 
         monster = Monster(
             controller._monster_spawns[pos][1] * CELL_SIZE, 
